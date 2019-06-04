@@ -37,10 +37,48 @@
         <skipITs>true</skipITs>
         <skipTests>false</skipTests>
         <skipUTs>${skipTests}</skipUTs>
-        <surefire.groups></surefire.groups>
+        <!--<surefire.groups></surefire.groups>-->
     </properties>
 
+    <repositories>
+        <repository>
+            <id>bintray</id>
+            <url>http://dl.bintray.com/epam/reportportal</url>
+        </repository>
+        <repository>
+            <id>jitpack.io</id>
+            <url>https://jitpack.io</url>
+        </repository>
+    </repositories>
+
     <dependencies>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.12</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <version>1.2.3</version>
+        </dependency>
+        <dependency>
+            <groupId>com.epam.reportportal</groupId>
+            <artifactId>agent-java-junit</artifactId>
+            <version>4.1.0</version>
+        </dependency>
+        <dependency>
+            <groupId>com.epam.reportportal</groupId>
+            <artifactId>logger-java-logback</artifactId>
+            <version>4.0.0</version>
+        </dependency>
+        <dependency>
+            <groupId>com.nordstrom.tools</groupId>
+            <artifactId>junit-foundation</artifactId>
+            <version>9.1.1</version>
+        </dependency>
+
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
@@ -107,12 +145,12 @@
             <scope>test</scope>
         </dependency>
         
-		<dependency>
-		    <groupId>com.aventstack</groupId>
-		    <artifactId>extentreports</artifactId>
-		    <version>${extentreports.version}</version>
-		    <scope>test</scope>
-		</dependency>
+		<!--<dependency>-->
+		    <!--<groupId>com.aventstack</groupId>-->
+		    <!--<artifactId>extentreports</artifactId>-->
+		    <!--<version>${extentreports.version}</version>-->
+		    <!--<scope>test</scope>-->
+		<!--</dependency>-->
        
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -135,8 +173,11 @@
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>${surefire.version}</version>
                 <configuration>
+                    <useFile>false</useFile>
                     <skipTests>${skipUTs}</skipTests>
-                    <testFailureIgnore>false</testFailureIgnore>
+                    <testFailureIgnore>true</testFailureIgnore>
+                    <!--suppress UnresolvedMavenProperty -->
+                    <argLine>-javaagent:${com.nordstrom.tools:junit-foundation:jar}</argLine>
                     <argLine>
                         -javaagent:"${settings.localRepository}/org/aspectj/aspectjweaver/${aspectj.version}/aspectjweaver-${aspectj.version}.jar"
                     </argLine>
@@ -153,40 +194,40 @@
             </plugin>
 
             <!-- Integration Tests -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-failsafe-plugin</artifactId>
-                <version>${failsafe.version}</version>
-                <executions>
-                    <execution>
-                        <id>integration-tests</id>
-                        <phase>integration-test</phase>
-                        <goals>
-                            <goal>integration-test</goal>
-                            <goal>verify</goal>
-                        </goals>
-                    </execution>
-                </executions>
-                <configuration>
-                    <skipTests>${skipTests}</skipTests>
-                    <skipITs>${skipITs}</skipITs>
-                    <testFailureIgnore>false</testFailureIgnore>
-                    <reportsDirectory>${project.build.directory}/surefire-reports</reportsDirectory>
-                    <argLine>
-                        -javaagent:"${settings.localRepository}/org/aspectj/aspectjweaver/${aspectj.version}/aspectjweaver-${aspectj.version}.jar"
-                    </argLine>
-                    <properties>
-                        <property>
-                            <name>listener</name>
-                            <value>io.qameta.allure.junit4.AllureJunit4</value>
-                        </property>
-                    </properties>
-                    <systemProperties>
-                        <allure.results.directory>${project.basedir}/target/allure-results</allure.results.directory>
-                    </systemProperties>
-                    <groups>${surefire.groups}</groups>
-                </configuration>
-            </plugin>
+            <!--<plugin>-->
+                <!--<groupId>org.apache.maven.plugins</groupId>-->
+                <!--<artifactId>maven-failsafe-plugin</artifactId>-->
+                <!--<version>${failsafe.version}</version>-->
+                <!--<executions>-->
+                    <!--<execution>-->
+                        <!--<id>integration-tests</id>-->
+                        <!--<phase>integration-test</phase>-->
+                        <!--<goals>-->
+                            <!--<goal>integration-test</goal>-->
+                            <!--<goal>verify</goal>-->
+                        <!--</goals>-->
+                    <!--</execution>-->
+                <!--</executions>-->
+                <!--<configuration>-->
+                    <!--<skipTests>${skipTests}</skipTests>-->
+                    <!--<skipITs>${skipITs}</skipITs>-->
+                    <!--<testFailureIgnore>true</testFailureIgnore>-->
+                    <!--<reportsDirectory>${project.build.directory}/surefire-reports</reportsDirectory>-->
+                    <!--<argLine>-->
+                        <!-- -javaagent:"${settings.localRepository}/org/aspectj/aspectjweaver/${aspectj.version}/aspectjweaver-${aspectj.version}.jar"-->
+                    <!--</argLine>-->
+                    <!--<properties>-->
+                        <!--<property>-->
+                            <!--<name>listener</name>-->
+                            <!--<value>io.qameta.allure.junit4.AllureJunit4</value>-->
+                        <!--</property>-->
+                    <!--</properties>-->
+                    <!--<systemProperties>-->
+                        <!--<allure.results.directory>${project.basedir}/target/allure-results</allure.results.directory>-->
+                    <!--</systemProperties>-->
+                    <!--<groups>${surefire.groups}</groups>-->
+                <!--</configuration>-->
+            <!--</plugin>-->
 
             <!-- Report UT and IT Tests -->
             <plugin>
@@ -196,85 +237,85 @@
             </plugin>
 
             <!-- add it folder -->
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>build-helper-maven-plugin</artifactId>
-                <version>${helper.version}</version>
-                <executions>
-                    <execution>
-                        <id>add-it-source</id>
-                        <phase>generate-test-sources</phase>
-                        <goals>
-                            <goal>add-test-source</goal>
-                        </goals>
-                        <configuration>
-                            <sources>
-                                <source>src/it/java</source>
-                            </sources>
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <id>add-it-resources</id>
-                        <phase>generate-test-resources</phase>
-                        <goals>
-                            <goal>add-test-resource</goal>
-                        </goals>
-                        <configuration>
-                            <resources>
-                                <resource>
-                                    <directory>src/it/resources</directory>
-                                </resource>
-                            </resources>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
+            <!--<plugin>-->
+                <!--<groupId>org.codehaus.mojo</groupId>-->
+                <!--<artifactId>build-helper-maven-plugin</artifactId>-->
+                <!--<version>${helper.version}</version>-->
+                <!--<executions>-->
+                    <!--<execution>-->
+                        <!--<id>add-it-source</id>-->
+                        <!--<phase>generate-test-sources</phase>-->
+                        <!--<goals>-->
+                            <!--<goal>add-test-source</goal>-->
+                        <!--</goals>-->
+                        <!--<configuration>-->
+                            <!--<sources>-->
+                                <!--<source>src/it/java</source>-->
+                            <!--</sources>-->
+                        <!--</configuration>-->
+                    <!--</execution>-->
+                    <!--<execution>-->
+                        <!--<id>add-it-resources</id>-->
+                        <!--<phase>generate-test-resources</phase>-->
+                        <!--<goals>-->
+                            <!--<goal>add-test-resource</goal>-->
+                        <!--</goals>-->
+                        <!--<configuration>-->
+                            <!--<resources>-->
+                                <!--<resource>-->
+                                    <!--<directory>src/it/resources</directory>-->
+                                <!--</resource>-->
+                            <!--</resources>-->
+                        <!--</configuration>-->
+                    <!--</execution>-->
+                <!--</executions>-->
+            <!--</plugin>-->
             
             <!-- add resources it folder -->
-            <plugin>
-                <inherited>true</inherited>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-resources-plugin</artifactId>
-                <version>2.7</version>
-				<executions>
-			        <execution>
-			            <id>copy-allure-environment</id>
-			            <phase>pre-site</phase>
-			            <goals>
-			                <goal>copy-resources</goal>
-			            </goals>
-			            <configuration>
-			                <outputDirectory>${basedir}/target/allure-results</outputDirectory>
-			                <resources>
-			                    <resource>
-			                        <directory>src/it/resources</directory>
-			                        <includes>
-			                            <include>allure.properties</include>
-			                            <include>categories.json</include>
-			                            <include>environment.properties</include>
-			                        </includes>
-			                    </resource>
-			                </resources>
-			            </configuration>
-			        </execution>
-			    </executions>
-                <configuration>
-                    <encoding>UTF-8</encoding>
-                </configuration>
-            </plugin>   
+            <!--<plugin>-->
+                <!--<inherited>true</inherited>-->
+                <!--<groupId>org.apache.maven.plugins</groupId>-->
+                <!--<artifactId>maven-resources-plugin</artifactId>-->
+                <!--<version>2.7</version>-->
+				<!--<executions>-->
+			        <!--<execution>-->
+			            <!--<id>copy-allure-environment</id>-->
+			            <!--<phase>pre-site</phase>-->
+			            <!--<goals>-->
+			                <!--<goal>copy-resources</goal>-->
+			            <!--</goals>-->
+			            <!--<configuration>-->
+			                <!--<outputDirectory>${basedir}/target/allure-results</outputDirectory>-->
+			                <!--<resources>-->
+			                    <!--<resource>-->
+			                        <!--<directory>src/it/resources</directory>-->
+			                        <!--<includes>-->
+			                            <!--<include>allure.properties</include>-->
+			                            <!--<include>categories.json</include>-->
+			                            <!--<include>environment.properties</include>-->
+			                        <!--</includes>-->
+			                    <!--</resource>-->
+			                <!--</resources>-->
+			            <!--</configuration>-->
+			        <!--</execution>-->
+			    <!--</executions>-->
+                <!--<configuration>-->
+                    <!--<encoding>UTF-8</encoding>-->
+                <!--</configuration>-->
+            <!--</plugin>   -->
         </plugins>
     </build>
     
     <!-- profiles execucao -->
-    <profiles>
-	    <profile>
-            <id>it-test</id>
-            <properties>
-                <skipTests>false</skipTests>
-                <skipITs>false</skipITs>
-                <skipUTs>true</skipUTs>
-                <surefire.groups>category.ReportsTests</surefire.groups>
-            </properties>
-        </profile>
-	</profiles>
+    <!--<profiles>-->
+	    <!--<profile>-->
+            <!--<id>it-test</id>-->
+            <!--<properties>-->
+                <!--<skipTests>false</skipTests>-->
+                <!--<skipITs>false</skipITs>-->
+                <!--<skipUTs>true</skipUTs>-->
+                <!--<surefire.groups>category.ReportsTests</surefire.groups>-->
+            <!--</properties>-->
+        <!--</profile>-->
+	<!--</profiles>-->
 </project>

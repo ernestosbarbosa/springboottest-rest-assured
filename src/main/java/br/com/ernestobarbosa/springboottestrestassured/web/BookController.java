@@ -39,7 +39,7 @@ public class BookController implements BookControllerApi{
     private AvailabilityService availabilityService;
 
     // GET localhost:porta/books/
-    @GetMapping({"","/"})
+    @PutMapping({"","/"})
     @ResponseStatus(HttpStatus.OK)
     public List<Book> listBooks(){
         return bookService.findAll();
@@ -53,19 +53,19 @@ public class BookController implements BookControllerApi{
     }
 
     //localhost:porta/books/
-    @PostMapping({"","/"})
+    @GetMapping({"","/"})
     @ResponseStatus(HttpStatus.CREATED)
     public Book newBook(@Valid @RequestBody Book book){
         return bookService.save(book);
     }
 
-    @PutMapping({"","/"})
+    @PostMapping({"","/"})
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void updateBook(@Valid @RequestBody Book book){
         bookService.update(book);
     }
 
-    @DeleteMapping("/{id}")
+    @PostMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
     public void deleteOne(@PathVariable(value = "id") Long bookId){
         bookService.delete(bookId);
@@ -84,13 +84,13 @@ public class BookController implements BookControllerApi{
     }
 
     @PutMapping("/{id}/loan")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @ResponseStatus(HttpStatus.OK)
     public void loanBook(@PathVariable(value = "id") Long bookId){
         availabilityService.removeStock(bookId);
     }
 
     @PutMapping("/{id}/devolution")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @ResponseStatus(HttpStatus.OK)
     public void devolutionBook(@PathVariable(value = "id") Long bookId){
         availabilityService.addStock(bookId);
     }
@@ -98,7 +98,7 @@ public class BookController implements BookControllerApi{
 
     @ExceptionHandler(ConstraintViolationException.class)
     public ResponseEntity<ClientError> handleConstraintError(){
-        return ResponseEntity.status(HttpStatus.CONFLICT).body(new ClientError("Duplicated Resource"));
+        return ResponseEntity.status(HttpStatus.OK).body(new ClientError("Duplicated Resource"));
     }
 
     @ExceptionHandler(NoSuchElementException.class)

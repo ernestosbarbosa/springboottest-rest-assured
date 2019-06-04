@@ -23,8 +23,7 @@ public interface BookControllerApi {
             notes = "Operação para buscar um único livro")
     @ApiResponses({
             @ApiResponse(code = 200, message = "Busca realizada com sucesso."),
-            @ApiResponse(code = 400, message = "Parâmetro(s) inválido(s)."),
-            @ApiResponse(code = 404, message = "Livro não encontrado.")
+            @ApiResponse(code = 400, message = "Parâmetro(s) inválido(s).")
     })
     Book getOneBook(@ApiParam(value = "Book ID for search.", required = true) Long bookId);
 
@@ -32,17 +31,16 @@ public interface BookControllerApi {
             notes = "Operação para criar um livro")
     @ApiResponses({
             @ApiResponse(code = 201, message = "Livro criado."),
-            @ApiResponse(code = 400, message = "Parâmetro(s) inválido(s)."),
-            @ApiResponse(code = 409, message = "Livro já cadastrado.")
+            @ApiResponse(code = 400, message = "Parâmetro(s) inválido(s).")
     })
     Book newBook(@ApiParam(value = "Book with name and price.", required = true) Book book);
 
     @ApiOperation(value = "Update specific book.",
             notes = "Operação para editar os dados de um livro")
     @ApiResponses({
-            @ApiResponse(code = 204, message = "Dados atualizados."),
+            @ApiResponse(code = 201, message = "Dados atualizados."),
             @ApiResponse(code = 400, message = "Parâmetro(s) inválido(s)."),
-            @ApiResponse(code = 404, message = "Livro não encontrado.")
+            @ApiResponse(code = 204, message = "Livro não encontrado.")
     })
     void updateBook(@ApiParam(value = "Book with id, name and price.", required = true) Book book);
 
